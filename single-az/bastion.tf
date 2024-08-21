@@ -77,7 +77,7 @@ resource "aws_instance" "bastion_server" {
     instance_type = "t2.micro"
     subnet_id = module.vpc.public_subnets[0]
     vpc_security_group_ids = [aws_security_group.bastion_server_sg.id]
-    availability_zone = "ap-northeast-2a"
+    availability_zone = "${var.region}a"
     key_name = aws_key_pair.example_kp.key_name
     tags = {
         Name = "bastion_server"
