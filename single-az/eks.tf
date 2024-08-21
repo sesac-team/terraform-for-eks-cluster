@@ -13,7 +13,7 @@ module "eks" {
 
   cluster_name    = local.cluster_name
   cluster_version = "1.30"
-  cluster_endpoint_private_access = true  # Basiton server를 통해서만 private subnet의 노드에 접근할 수 있도록
+  cluster_endpoint_public_access = true
 
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.vpc.private_subnets
@@ -23,22 +23,16 @@ module "eks" {
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
-    aws-ebs-csi-driver     = {}
   }
   
-  eks_managed_node_group_defaults = {
-    instance_types = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
-  }
-
   eks_managed_node_groups = {
     eks_nodes = {
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["m5.xlarge"]
+      instance_types = ["t3.micro"]
 
       min_size     = 2
       max_size     = 5
       desired_size = 3
-      key_name = ""
     }
   }
   enable_irsa = true
