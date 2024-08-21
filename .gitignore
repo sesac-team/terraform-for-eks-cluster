@@ -41,4 +41,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# key pairs
+example_kp.pem
+
 # End of https://www.toptal.com/developers/gitignore/api/terraform,helm
