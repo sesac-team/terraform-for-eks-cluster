@@ -16,19 +16,23 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.private_subnets
+  subnet_ids               = [
+    element(module.vpc.private_subnets, 0),  
+    element(module.vpc.private_subnets, 1)  
+  ]
   
   cluster_addons = {
     coredns                = {}
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
+    aws-ebs-csi-driver     = {}
   }
   
   eks_managed_node_groups = {
     eks_nodes = {
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.micro"]
+      instance_types = ["t3.small"]
 
       min_size     = 2
       max_size     = 5
