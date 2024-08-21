@@ -45,7 +45,7 @@ resource "aws_rds_cluster" "my_rds_cluster" {
   engine = "aurora-mysql"
   engine_mode = "provisioned"
   engine_version = "5.7.mysql_aurora.2.11.1"
-  availability_zones = ["ap-northeast-2a", "ap-northeast-2c"]
+  availability_zones = ["${var.region}a", "${var.region}c"]
   database_name = "mydatabase"
   master_username = "admin"
   master_password = "admin1234**"
