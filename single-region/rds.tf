@@ -56,7 +56,7 @@ resource "aws_rds_cluster" "my_rds_cluster" {
 # RDS 인스턴스 생성 
 resource "aws_rds_cluster_instance" "my_rds_cluster_instance" {
   count = 2 # 총 2개의 인스턴스 생성(Reader/Writer로)
-  identifier = "my-rds-cluster-instance-${count.index}"
+  identifier = "my-rds-cluster-instance-${count.index + 1}"
   cluster_identifier = aws_rds_cluster.my_rds_cluster.id 
   instance_class = "db.t3.small"
   engine = aws_rds_cluster.my_rds_cluster.engine
