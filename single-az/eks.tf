@@ -1,6 +1,6 @@
 resource "random_string" "suffix" {
-  length  = 8
-  special = false # 특수문자를 제외한 8자의 무작위 문자열 생성
+  length  = 3
+  special = false # 특수문자를 제외한 3자의 무작위 문자열 생성
 }
 
 locals {
@@ -13,7 +13,10 @@ module "eks" {
 
   cluster_name    = local.cluster_name
   cluster_version = "1.30"
+
+  # API 엔드포인트로 접근을 VPC 내 Bastion Server에서만 가능하도록 구성 
   cluster_endpoint_public_access = true
+  # cluster_security_group_id = aws_security_group.bastion_server_sg.id
 
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = [
