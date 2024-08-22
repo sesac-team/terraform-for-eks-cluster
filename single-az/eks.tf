@@ -16,7 +16,6 @@ module "eks" {
 
   # API 엔드포인트로 접근을 VPC 내 Bastion Server에서만 가능하도록 구성 
   cluster_endpoint_public_access = true
-  # cluster_security_group_id = aws_security_group.bastion_server_sg.id
 
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = [
@@ -44,4 +43,14 @@ module "eks" {
   }
   enable_irsa = true
   enable_cluster_creator_admin_permissions = true
+}
+
+resource "aws_security_group_rule" "allow_bastion_sg" {
+  type        = "ingress"
+  from_port    = 443
+  to_port      = 443
+  protocol     = "tcp"
+  security_group_id = module.eks.cluster_security_group_id
+  source_security_group_id = aws_security_group.bastion_server_sg.id
+  description = "add sg of BASTION server"
 }
