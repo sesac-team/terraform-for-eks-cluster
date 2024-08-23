@@ -42,6 +42,24 @@ resource "aws_instance" "bastion_server" {
     vpc_security_group_ids = [aws_security_group.bastion_server_sg.id]
     availability_zone = "${var.region}a"
     key_name = var.bastion_key
+    user_data = <<-EOF
+              #!/bin/bash
+              # AWS CLI 설치
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
+              aws --version
+
+              # eksctl 설치
+              curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+              sudo mv /tmp/eksctl /usr/local/bin
+              eksctl version
+
+              # kubectl 설치
+              curl -LO "https://dl.k8s.io/release/v1.27.1/bin/linux/amd64/kubectl"
+              sudo mv kubectl /usr/local/bin/
+              sudo chmod +x /usr/local/bin/kubectl
+              EOF
     tags = {
         Name = "bastion_server"
     }

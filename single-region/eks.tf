@@ -45,7 +45,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 }
 
-resource "aws_security_group_rule" "allow_bastion_sg" {
+/*resource "aws_security_group_rule" "allow_bastion_sg" {
   type        = "ingress"
   from_port    = 443
   to_port      = 443
@@ -53,4 +53,4 @@ resource "aws_security_group_rule" "allow_bastion_sg" {
   security_group_id = module.eks.cluster_security_group_id
   source_security_group_id = aws_security_group.bastion_server_sg.id
   description = "add sg of BASTION server"
-}
+}*/
