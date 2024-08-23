@@ -1,10 +1,5 @@
-resource "random_string" "suffix" {
-  length  = 3
-  special = false # 특수문자를 제외한 3자의 무작위 문자열 생성
-}
-
 locals {
-  cluster_name = "my-eks-${random_string.suffix.result}"
+  cluster_name = "fullaccel-eks"
 }
 
 module "eks" {
@@ -12,7 +7,7 @@ module "eks" {
   version = "~> 20.0"
 
   cluster_name    = local.cluster_name
-  cluster_version = "1.30"
+  cluster_version = "1.28"
 
   # API 엔드포인트로 접근을 VPC 내 Bastion Server에서만 가능하도록 구성 
   cluster_endpoint_public_access = false

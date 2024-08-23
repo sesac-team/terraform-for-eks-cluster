@@ -57,8 +57,8 @@ resource "aws_instance" "bastion_server" {
 
               # kubectl 설치
               curl -LO "https://dl.k8s.io/release/v1.27.1/bin/linux/amd64/kubectl"
-              sudo mv kubectl /usr/local/bin/
-              sudo chmod +x /usr/local/bin/kubectl
+              sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+              kubectl version --short
               EOF
     tags = {
         Name = "bastion_server"
