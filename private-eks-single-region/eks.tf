@@ -2,6 +2,7 @@ locals {
   cluster_name = "fullaccel-eks"
 }
 
+# EKS 모듈 사용
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"

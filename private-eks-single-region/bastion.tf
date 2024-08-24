@@ -36,7 +36,7 @@ resource "aws_eip_association" "eip" {
 
 # Bastion 서버 EC2 인스턴스 생성
 resource "aws_instance" "bastion_server" {
-    ami = "ami-008d41dbe16db6778"
+    ami = "${var.ami_ID}"
     instance_type = "t2.micro"
     subnet_id = module.vpc.public_subnets[0]
     vpc_security_group_ids = [aws_security_group.bastion_server_sg.id]
