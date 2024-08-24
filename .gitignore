@@ -41,9 +41,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# key pairs
-example_kp.pem
-
 # variables file
 variables.tf
 
