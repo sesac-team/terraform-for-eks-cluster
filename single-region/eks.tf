@@ -51,7 +51,7 @@ resource "aws_security_group_rule" "allow_bastion_sg" {
   description              = "add sg of BASTION server"
 }
 
-# istio 동작을 위한 보안 그룹 허용 추가
+# istio 동작 허용 보안 그룹 추가
 resource "aws_security_group_rule" "allow_istio" {
   type              = "ingress"
   from_port         = 15012

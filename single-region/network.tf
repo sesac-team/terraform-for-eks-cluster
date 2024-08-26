@@ -11,12 +11,12 @@ module "vpc" {
   single_nat_gateway = true
   enable_vpn_gateway = true
 
-  # LBC를 위한 퍼블릭 서브넷 태그값 추가
+  # LBC 배포를 위한 퍼블릭 서브넷 태그값 추가
   public_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/elb" = 1
   }
-  # 프라이빗 로드 밸런서 서브넷 태그로 VPC 내에서만 서비스를 노출
+  # LBC 배포를 위한 프라이빗 서브넷 태그값 추가(VPC 내에서만 서비스를 노출)
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb" = 1
