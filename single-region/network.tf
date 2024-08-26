@@ -14,7 +14,7 @@ module "vpc" {
   # internal-elb 프라이빗 로드 밸런서로 VPC 내에서만 서비스를 노출
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   tags = {

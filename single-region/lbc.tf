@@ -1,63 +1,73 @@
-locals {
-  lb_controller_iam_role_name        = "AmazonEKSLoadBalancerControllerRole"
-  lb_controller_service_account_name = "aws-load-balancer-controller"
-}
+# AWS Load Balancer Controller가 OIDC를 통해 IAM 역할을 승계
+data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
 
-# 현재 EKS 클러스터의 auth 조회
-data "aws_eks_cluster_auth" "this" {
-  name = local.cluster_name
-}
-
-# IAM 모듈 사용해 IAM 역할 생성
-module "lb_controller_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-
-  create_role = true
-
-  role_name        = local.lb_controller_iam_role_name
-  role_path        = "/"
-  role_description = "role of AWS Load Balancer Controller for EKS"
-
-  # OIDC url 
-  provider_url = replace(module.eks.cluster_oidc_issuer_url, "https://", "")
-  
-  # 서비스 어카운트와 IAM 역할을 바인딩
-  oidc_fully_qualified_subjects = [
-    "system:serviceaccount:kube-system:${local.lb_controller_service_account_name}"
-  ]
-
-  # IAM 역할과 sts를 바인딩
-  oidc_fully_qualified_audiences = [
-    "sts.amazonaws.com"
-  ]
-}
-
-# LBC에 필요한 IAM 정책(policy) json 파일 사용
-data "http" "iam_policy" {
-  url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.0/docs/install/iam_policy.json"
-}
-
-# IAM 정책(policy) 생성 및 역할과 바인딩
-resource "aws_iam_role_policy" "controller" {
-  name_prefix = "AWSLoadBalancerControllerIAMPolicy"
-  policy      = data.http.iam_policy.body
-  role        = module.lb_controller_role.iam_role_name
-}
-
-# Helm 차트 배포
-resource "helm_release" "release" {
-  name       = "aws-load-balancer-controller"
-  chart      = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  namespace  = "kube-system"
-
-  values = [
-    <<EOF
-    {
-      clusterName : module.eks.cluster_id,
-      serviceAccount.create : false,
-      serviceAccount.name : local.lb_controller_service_account_name
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(module.eks.cluster_oidc_issuer_url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
     }
-    EOF
-  ]
+
+    #  OIDC 공급자의 ARN을 주체로 설정
+    principals {
+      identifiers = [module.eks.oidc_provider_arn]
+      type        = "Federated"
+    }
+  }
 }
+
+# AWS Load Balancer Controller의 IAM 역할 생성
+resource "aws_iam_role" "aws_load_balancer_controller" {
+  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
+  name = "aws-load-balancer-controller"
+}
+
+resource "aws_iam_policy" "aws_load_balancer_controller" {
+    policy = file("./AWSLoadBalancerControllerRole.json")
+    name = "AWSLoadBalancerControllerRole"
+}
+# IAM 역할과 정책을 바인딩
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
+    role = aws_iam_role.aws_load_balancer_controller.name
+    policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
+}
+
+# helm을 사용해 AWS Load Balancer Controller를 EKS 클러스터에 배포
+resource "helm_release" "aws-load-balancer-controller" {
+    name = "aws-load-balancer-controller"
+
+    repository = "https://aws.github.io/eks-charts"
+    chart = "aws-load-balancer-controller"
+    namespace = "kube-system"
+    version = "1.5.5"
+
+    set {
+      name = "clusterName"
+      value = module.eks.cluster_name
+    }
+    set {
+      name = "image.tag"
+      value = "v2.5.1"
+    }
+    set {
+      name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = aws_iam_role.aws_load_balancer_controller.arn
+    }
+  set {
+    name  = "aws.region"
+    value = var.region 
+  }
+
+  set {
+    name  = "vpcId"
+    value = module.vpc.vpc_id
+  }
+
+    depends_on = [ 
+        module.eks.eks_nodes,
+        aws_iam_role_policy_attachment.aws_load_balancer_controller_attach
+     ]
+}
+
