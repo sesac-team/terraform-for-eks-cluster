@@ -16,12 +16,12 @@ module "vpc" {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/elb" = 1
   }
-
+  # 프라이빗 로드 밸런서 서브넷 태그로 VPC 내에서만 서비스를 노출
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb" = 1
   }
-  
+
   tags = {
     Terraform = "true"
     Environment = "dev"
