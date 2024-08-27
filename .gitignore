@@ -41,6 +41,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# 미완성
-efs-csi.tf
+# variables file
+variables.tf
 
+# 미완성
+efs-filesystem.tf

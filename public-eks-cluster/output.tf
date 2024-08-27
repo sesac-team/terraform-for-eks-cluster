@@ -1,5 +1,5 @@
+# 자동으로 실행되는 update config 명령어 출력
 output "configure_kubectl" {
-  value = <<EOF
-    aws eks update-kubeconfig --region ${var.region} --name ${module.eks.cluster_name}
-    EOF
+  description = "Automatically Generated update-kubeconfig Command"
+  value = "aws eks update-kubeconfig --region ${var.region} --name ${module.eks.cluster_name}"
 }
