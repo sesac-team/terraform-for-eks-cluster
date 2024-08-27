@@ -23,9 +23,9 @@ module "eks" {
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
-    # aws-efs-csi-driver     = {
-      # service_account_role_arn = module.efs_csi_irsa.iam_role_arn
-    # }
+    aws-efs-csi-driver     = {
+      service_account_role_arn = module.efs_csi_irsa.iam_role_arn
+    }
   }
   
   eks_managed_node_groups = {
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "allow_istio" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-# EFS 허용 인바운드 규칙 추가
+# EFS 보안그룹 허용 인바운드 규칙 추가
 resource "aws_security_group_rule" "allow_efs_sg" {
   type                      = "ingress"
   from_port                 = 2049
