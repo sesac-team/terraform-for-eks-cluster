@@ -23,13 +23,15 @@ module "eks" {
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
-    aws-ebs-csi-driver     = {}
+    # aws-efs-csi-driver     = {
+      # service_account_role_arn = module.efs_csi_irsa.iam_role_arn
+    # }
   }
   
   eks_managed_node_groups = {
     eks_nodes = {
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.small"]
+      instance_types = ["t3.medium"]
 
       min_size     = 2
       max_size     = 5

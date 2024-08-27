@@ -8,7 +8,7 @@ module "vpc" {
   public_subnets  = ["10.0.5.0/24", "10.0.6.0/24"]
 
   enable_nat_gateway = true
-  single_nat_gateway = true
+  single_nat_gateway = true # 비용적 측면을 고려해 NAT 게이트웨이를 하나로 설정
   enable_vpn_gateway = true
 
   # LBC 배포를 위한 퍼블릭 서브넷 태그값 추가

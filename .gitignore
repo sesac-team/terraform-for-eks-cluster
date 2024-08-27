@@ -44,3 +44,6 @@ terraform.rc
 # variables file
 variables.tf
 
+# 미완성
+efs-csi.tf
+
