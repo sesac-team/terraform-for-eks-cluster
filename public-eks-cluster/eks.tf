@@ -42,7 +42,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 }
 
-# BASTION 서버의 보안그룹 허용 보안그룹 추가
+# BASTION 서버의 보안그룹 허용 인바운드 규칙 추가
 resource "aws_security_group_rule" "allow_bastion_sg" {
   type                     = "ingress"
   from_port                = 443
@@ -53,7 +53,7 @@ resource "aws_security_group_rule" "allow_bastion_sg" {
   description              = "add sg of BASTION server"
 }
 
-# istio 동작 허용 보안 그룹 추가
+# istio 동작 허용 인바운드 규칙 추가
 resource "aws_security_group_rule" "allow_istio" {
   type              = "ingress"
   from_port         = 15012
@@ -62,6 +62,16 @@ resource "aws_security_group_rule" "allow_istio" {
   security_group_id = module.eks.cluster_security_group_id
   description       = "add sg for ISTIO pod"
   cidr_blocks       = ["0.0.0.0/0"]
+}
+
+# EFS 허용 인바운드 규칙 추가
+resource "aws_security_group_rule" "allow_efs_sg" {
+  type                      = "ingress"
+  from_port                 = 2049
+  to_port                   = 2049
+  protocol                  = "tcp"
+  security_group_id         = module.eks.cluster_security_group_id
+  source_security_group_id  = aws_security_group.efs_sg.id
 }
 
 # 현재 시스템에 aws 자격증명이 있을 경우에만 명령어 실행 성공(BASTION 서버에선 자격증명부터 등록 필요)
