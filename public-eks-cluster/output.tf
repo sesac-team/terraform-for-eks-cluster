@@ -9,7 +9,7 @@ output "OIDC_provider_arn" {
 }
 
 # 자동으로 실행되는 update config 명령어 출력
-output "kubeconfig_command " {
+output "kubeconfig_command" {
   description = "Automatically Generated update-kubeconfig Command"
   value = "aws eks update-kubeconfig --region ${var.region} --name ${module.eks.cluster_name}"
 }
