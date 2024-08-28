@@ -63,3 +63,13 @@ resource "aws_security_group_rule" "allow_istio" {
   description       = "add sg for ISTIO pod"
   cidr_blocks       = ["0.0.0.0/0"]
 }
+
+# EFS 보안그룹 허용 인바운드 규칙 추가
+resource "aws_security_group_rule" "allow_efs_sg" {
+  type                      = "ingress"
+  from_port                 = 2049
+  to_port                   = 2049
+  protocol                  = "tcp"
+  security_group_id         = module.eks.cluster_security_group_id
+  source_security_group_id  = aws_security_group.efs_sg.id
+}
