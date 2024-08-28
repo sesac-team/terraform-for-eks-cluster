@@ -6,7 +6,7 @@
 - **variables.tf 파일**에 리전별 Amazon Linux 2023 AMI ID 를 명시해두었으니 주석을 제거하고 사용하세요.
 
 # 디렉토리 사용 안내 
-|                  | **private-eks-single-region**                       | **public-eks-cluster**                       |
+|      디렉토리명           | **private-eks-cluster**                       | **public-eks-cluster**                       |
 |------------------|------------------------------------------------------|----------------------------------------------|
 | **API 엔드포인트 액세스**  | false <br> 같은 VPC 내 bastion 서버를 통해서만 접근         | true <br> 외부 인터넷망에서 접근                  |
 
