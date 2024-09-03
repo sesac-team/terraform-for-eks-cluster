@@ -4,5 +4,11 @@ terraform {
         bucket = "fullaccel-tfstate-bucket"
         key = "terraform.tfstate"
         region = "var.region"
+        dynamodb_table = "fullaccel-tfstate-bucket-table"
+
+        s3_bucket_tags = {
+            "ManagedBy"   = "Terraform"
+            "Description" = "tfstate backend resource of fullaccel project"
+        }
     }
 }
