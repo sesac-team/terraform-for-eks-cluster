@@ -24,18 +24,17 @@ resource "aws_security_group" "bastion_server_sg" {
 
 # Bastion 서버의 EIP 생성 및 할당
 resource "aws_eip" "bastion_eip" {
-  vpc = true
   tags = {
     "Name" = "bastion_eip"
   }
 }
 resource "aws_eip_association" "eip" {
-  instance_id = aws_instance.bastion_server.id
+  instance_id = aws_instance.bastion-server.id
   allocation_id = aws_eip.bastion_eip.id 
 }
 
 # Bastion 서버 EC2 인스턴스 생성
-resource "aws_instance" "bastion_server" {
+resource "aws_instance" "bastion-server" {
     ami = "${var.ami_ID}"
     instance_type = "t2.micro"
     subnet_id = module.vpc.public_subnets[0]
@@ -61,6 +60,6 @@ resource "aws_instance" "bastion_server" {
               kubectl version --short
               EOF
     tags = {
-        Name = "bastion_server"
+        Name = "bastion-server"
     }
 }

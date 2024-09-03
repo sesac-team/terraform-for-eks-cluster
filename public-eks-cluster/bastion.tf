@@ -24,7 +24,6 @@ resource "aws_security_group" "bastion_server_sg" {
 
 # Bastion 서버의 EIP 생성 및 할당
 resource "aws_eip" "bastion_eip" {
-  vpc = true
   tags = {
     "Name" = "bastion_eip"
   }
