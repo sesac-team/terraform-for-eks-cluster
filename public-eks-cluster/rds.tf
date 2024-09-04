@@ -61,6 +61,9 @@ resource "aws_rds_cluster_instance" "my_rds_cluster_instance" {
   instance_class = "db.r5.large"
   engine = aws_rds_cluster.my_rds_cluster.engine
   engine_version = aws_rds_cluster.my_rds_cluster.engine_version
+
+  # Writer용 인스턴스(count.index == 0)이 반드시 a 가용영역에 배포되도록 지정
+  availability_zone = "${var.region}${count.index == 0 ? "a" : "c"}" 
 }
 
 # RDS 생성 시 Cluster와 인스턴스 간 엔진 및 버전의 정보가 모두 일치해야 함
