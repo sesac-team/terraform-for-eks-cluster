@@ -15,7 +15,7 @@ module "efs_csi_irsa" {
 
 # EFS 파일 시스템 생성
 resource "aws_efs_file_system" "efs" {
-  creation_token = "eks-efs"
+  creation_token = "fullaccel-eks-efs"
   tags = {
     Name = "eks-efs"
   }
