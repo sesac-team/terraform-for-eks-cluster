@@ -58,9 +58,12 @@ resource "aws_rds_cluster_instance" "my_rds_cluster_instance" {
   count = 2 # 총 2개의 인스턴스 생성(Reader/Writer로)
   identifier = "fullaccel-rds-instance-${count.index + 1}"
   cluster_identifier = aws_rds_cluster.my_rds_cluster.id 
-  instance_class = "db.r5.large"
+  instance_class = "db.t3.medium"
   engine = aws_rds_cluster.my_rds_cluster.engine
   engine_version = aws_rds_cluster.my_rds_cluster.engine_version
+
+  # Writer 용 인스턴스(count.index == 0)가 반드시 a 가용영역에 프로비저닝되도록 지정
+  availability_zone = "${var.region}${count.index == 0 ? "a" : "c"}"
 }
 
 # RDS 생성 시 Cluster와 인스턴스 간 엔진 및 버전의 정보가 모두 일치해야 함
